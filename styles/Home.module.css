@@ -1,0 +1,41 @@
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #ffe18a;
+}
+
+.finishedDiv{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #ffe18a;
+}
+.form{
+    width: 80%;
+    max-width: 500px;
+    display: flex;
+    border: 1px solid #ccc;
+    padding: 40px 40px;
+    justify-content: center;
+    flex-direction: column;
+    gap: 40px;
+    border-radius: 20px;
+    background-color: #FFF;
+}
+
+.title{
+    text-align: center;
+}
+
+.slide {
+    animation-name: example;
+    animation-duration: 2s;
+  }
+  
+  @keyframes example {
+    0% { transform: translateY(0%); }
+    100% { transform: translateY(-150%); opacity: 0.3; }
+  }
