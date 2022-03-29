@@ -22,6 +22,32 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [isQuestionsFinished, setIsQuestionsFinished] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(true);
+  const [isPasswordValid, setIsPasswordValid] = useState(true);
+
+
+  const validateEmail = (userInput) => {
+    setEmail(userInput);
+    const isValid =
+      /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/.test(
+        userInput
+      );
+    console.log(isValid, "email")
+    if (!isValid) {
+      setIsEmailValid(false);
+    } else {
+      setIsEmailValid(true);
+    }
+  };
+
+  const validatePassword = (userInput) => {
+    setPassword(userInput);
+    const isValid = userInput.length >= 6;
+    console.log(isValid, "password")
+    if (isValid) setIsPasswordValid(true);
+    else setIsPasswordValid(false);
+  };
+
 
   useEffect(() => {
     const fetchQuestions = () => {
@@ -52,7 +78,7 @@ export default function Home() {
     let isUsernameValid = username.length > 0;
     let isPasswordValid = password.length > 0;
     let isGenderValid = gender.length > 0;
-    if(!isUsernameValid || !isPasswordValid || !isGenderValid){
+    if (!isUsernameValid || !isPasswordValid || !isGenderValid) {
       alert("All fields are required");
       return;
     }
@@ -115,24 +141,40 @@ export default function Home() {
           variant="outlined"
           label="Username"
         />
-        <TextField
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          variant="outlined"
-          label="Email"
-        />
-        <TextField
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          variant="outlined"
-          label="Password"
-        />
-        <FormControl sx={{flexDirection:'row', gap:'40px', alignItems:'center', justifyContent:"center"}}>
+        <div>
+          <TextField
+            fullWidth
+            value={email}
+            onChange={(e) => validateEmail(e.target.value)}
+            variant="outlined"
+            label="Email"
+          />
+          {!isEmailValid && (
+            <Typography sx={{ color: "red", textAlign: "center", paddingTop: '5px' }}>
+              Email isn't valid.
+            </Typography>
+          )}
+        </div>
+        <div>
+          <TextField
+            fullWidth
+            value={password}
+            onChange={(e) => validatePassword(e.target.value)}
+            variant="outlined"
+            label="Password"
+          />
+          {!isPasswordValid && (
+            <Typography sx={{ color: "red", textAlign: "center", paddingTop: '5px' }}>
+              Password must be six characters long.
+            </Typography>
+          )}
+        </div>
+        <FormControl sx={{ flexDirection: 'row', gap: '40px', alignItems: 'center', justifyContent: "center" }}>
           <FormLabel>Gender</FormLabel>
           <RadioGroup
-          sx={{flexDirection:"row"}}
+            sx={{ flexDirection: "row" }}
             value={gender}
-            onChange={(e)=>setGender(e.target.value)}
+            onChange={(e) => setGender(e.target.value)}
             name="radio-buttons-group"
           >
             <FormControlLabel

@@ -5,14 +5,14 @@ import Recorder from "./Recorder";
 import { Button, Paper, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 
-const FileUpload = () => {
+const FileUpload = (props) => {
   const [audio, setAudio] = useState(null);
   const [currentAudio, setCurrentAudio] = useState();
   const [fetchedAudios, setFetchedAudios] = useState([]);
   const [currentIndex, setCurrentIndex] = useState();
   const [isRecordingStart, setIsRecordingStart] = useState(false);
   const [interval, setInterval] = useState();
-  const [userData, setUserData] = useState();
+  const [userData, setUserData] = useState(props.data);
 
   const router = useRouter();
 
@@ -43,38 +43,38 @@ const FileUpload = () => {
       router.push("/login");
     }
   };
-  useEffect(() => {
-    let token = localStorage.getItem("token");
-    if (!token) router.push("/login");
+  // useEffect(() => {
+  //   let token = localStorage.getItem("token");
+  //   if (!token) router.push("/login");
 
-    const fetchUserData = async () => {
-      try{
-      const response = await Axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/users/me`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.status === 200) {
-        let data = response.data;
-        setUserData(data);
-      }
-    }catch{
-      router.push("/login")
+  //   const fetchUserData = async () => {
+  //     try{
+  //     const response = await Axios.get(
+  //       `${process.env.NEXT_PUBLIC_API_URL}/api/users/me`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     if (response.status === 200) {
+  //       let data = response.data;
+  //       setUserData(data);
+  //     }
+  //   }catch{
+  //     router.push("/login")
 
-    }
-    };
-    fetchUserData();
-  }, []);
+  //   }
+  //   };
+  //   fetchUserData();
+  // }, []);
 
   useEffect(() => {
     const fetchAudiosList = async () => {
       const response = await Axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/api/recordings?populate=audio`
       );
-      if(response.status !== 200) router.push("/login")
+      if (response.status !== 200) router.push("/login")
       if (response.status === 200) {
         let femaleList = [];
         let maleList = [];
@@ -125,6 +125,7 @@ const FileUpload = () => {
           padding: "20px 80px",
           backgroundColor: "#e3e3e3",
           display: "flex",
+          width: '100%',
           flexDirection: "column",
         }}
       >
