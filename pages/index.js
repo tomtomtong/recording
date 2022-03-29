@@ -151,7 +151,7 @@ export default function Home() {
           />
           {!isEmailValid && (
             <Typography sx={{ color: "red", textAlign: "center", paddingTop: '5px' }}>
-              Email isn't valid.
+              Email is not valid.
             </Typography>
           )}
         </div>

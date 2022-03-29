@@ -130,7 +130,7 @@ const FileUpload = (props) => {
         }}
       >
         <Typography textAlign="center" variant="h4">
-          Server's audio
+          Servers audio
         </Typography>
         <Typography variant="subtitle1" textAlign="center">
           Playing gender {userData?.gender}
