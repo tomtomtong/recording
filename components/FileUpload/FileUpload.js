@@ -43,31 +43,6 @@ const FileUpload = (props) => {
       router.push("/login");
     }
   };
-  // useEffect(() => {
-  //   let token = localStorage.getItem("token");
-  //   if (!token) router.push("/login");
-
-  //   const fetchUserData = async () => {
-  //     try{
-  //     const response = await Axios.get(
-  //       `${process.env.NEXT_PUBLIC_API_URL}/api/users/me`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-  //     if (response.status === 200) {
-  //       let data = response.data;
-  //       setUserData(data);
-  //     }
-  //   }catch{
-  //     router.push("/login")
-
-  //   }
-  //   };
-  //   fetchUserData();
-  // }, []);
 
   useEffect(() => {
     const fetchAudiosList = async () => {
@@ -103,7 +78,7 @@ const FileUpload = (props) => {
       }
     };
     fetchAudiosList();
-  }, [userData]);
+  }, [props]);
 
   useEffect(() => {
     if (fetchedAudios.length > 0 && !isRecordingStart) {
