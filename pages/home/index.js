@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Recorder from "../../components/FileUpload/Recorder";
 import { Button, Paper, Typography } from "@mui/material";
 // import FileUpload from "../../components/FileUpload/FileUpload";
-import * as styles from "./FileUpload.module.css";
+import * as styles from "../../components/FileUpload/FileUpload.module.css";
 import Axios from "axios";
 
 export default function HomePage() {
@@ -92,7 +92,7 @@ export default function HomePage() {
             }
           }
         }
-        console.log("s")
+        console.log("s", userData.gender)
         if (userData?.gender === "male") {
           console.log("set")
           setFetchedAudios(maleList);
