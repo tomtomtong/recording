@@ -79,7 +79,7 @@ const FileUpload = (props) => {
         let femaleList = [];
         let maleList = [];
         let audios = response.data.data;
-
+        console.log(response)
         for (let i = 0; i < audios.length; i++) {
           if (audios[i].attributes.gender === "male") {
             for (let g = 0; g < audios[i].attributes.audio.data.length; g++) {
