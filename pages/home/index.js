@@ -1,4 +1,3 @@
-import { Paper } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Recorder from "../../components/FileUpload/Recorder";
@@ -94,6 +93,7 @@ export default function HomePage() {
           }
         }
         if (userData?.gender === "male") {
+          console.log("set")
           setFetchedAudios(maleList);
           setCurrentAudio(maleList[0]);
         }
