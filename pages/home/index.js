@@ -92,6 +92,7 @@ export default function HomePage() {
             }
           }
         }
+        console.log("s")
         if (userData?.gender === "male") {
           console.log("set")
           setFetchedAudios(maleList);
@@ -105,7 +106,7 @@ export default function HomePage() {
       }
     };
     fetchAudiosList();
-  }, []);
+  }, [userData]);
 
   useEffect(() => {
     if (fetchedAudios.length > 0 && !isRecordingStart) {
