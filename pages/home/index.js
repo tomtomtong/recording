@@ -47,9 +47,9 @@ export default function HomePage() {
     const data = new FormData();
 
     data.append("files", audio);
-    data.append("refId", "1");
+    data.append("refId", userData.id);
     data.append("ref", "plugin::users-permissions.user");
-    data.append("field", "cover");
+    data.append("field", "recording");
     let token = localStorage.getItem("token");
     if (!token) router.push("/login");
 
@@ -64,13 +64,11 @@ export default function HomePage() {
     );
     if (response.status === 200) {
       alert("File uploaded successfully");
-    } else {
-      localStorage.removeItem("token");
-      router.push("/login");
     }
   };
 
   useEffect(() => {
+    if (!userData) return
     const fetchAudiosList = async () => {
       const response = await Axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/api/recordings?populate=audio`
