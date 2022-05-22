@@ -64,7 +64,7 @@ export default function Home() {
 
   const validatePhoneNumber = (userInput) => {
     setPhoneNumber(userInput);
-    const isValid = phoneNumber.length >= 8;
+    const isValid = userInput.length >= 8;
 
     isValid ? setIsPhoneNumberValid(true) : setIsPhoneNumberValid(false);
   }
