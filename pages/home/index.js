@@ -5,6 +5,8 @@ import { Button, Paper, Typography } from "@mui/material";
 // import FileUpload from "../../components/FileUpload/FileUpload";
 import * as styles from "../../components/FileUpload/FileUpload.module.css";
 import Axios from "axios";
+import { fetchUserDataVideos } from "../../apis/user";
+import { sendRecording } from "../../apis/video";
 
 export default function HomePage() {
   const [userData, setUserData] = useState(null);
@@ -22,18 +24,9 @@ export default function HomePage() {
 
     const fetchUserData = async () => {
       try {
-        const response = await Axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/users/me?populate=video`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (response.status === 200) {
-          let data = response.data;
-          console.log(data);
-          setUserData(data);
+        const response = await fetchUserDataVideos();
+        if (response.status == 200) {
+          setUserData(response.data);
         }
       } catch {
         router.push("/login");
@@ -53,32 +46,24 @@ export default function HomePage() {
     let token = localStorage.getItem("token");
     if (!token) router.push("/login");
 
-    const response = await Axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/upload`,
-      data,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await sendRecording(data);
     if (response.status === 200) {
       alert("File uploaded successfully");
     }
   };
 
   useEffect(() => {
-    if (!userData) return
+    if (!userData) return;
     const fetchAudiosList = async () => {
       const response = await Axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/api/recordings?populate=audio`
       );
-      if (response.status !== 200) router.push("/login")
+      if (response.status !== 200) router.push("/login");
       if (response.status === 200) {
         let femaleList = [];
         let maleList = [];
         let audios = response.data.data;
-        console.log(response)
+        console.log(response);
         for (let i = 0; i < audios.length; i++) {
           if (audios[i].attributes.gender === "male") {
             for (let g = 0; g < audios[i].attributes.audio.data.length; g++) {
@@ -90,9 +75,7 @@ export default function HomePage() {
             }
           }
         }
-        console.log("s", userData.gender)
         if (userData?.gender === "male") {
-          console.log("set")
           setFetchedAudios(maleList);
           setCurrentAudio(maleList[0]);
         }
@@ -118,8 +101,6 @@ export default function HomePage() {
       clearTimeout(interval);
     }
   }, [fetchedAudios, isRecordingStart]);
-
-
 
   return (
     <div

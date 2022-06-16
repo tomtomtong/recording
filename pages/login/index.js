@@ -23,7 +23,7 @@ export default function Login() {
       );
       if (response.status === 200) {
         localStorage.setItem("token", response.data.jwt);
-        router.push("/home");
+        router.push("/video");
       }
     } catch {
       //Show error
