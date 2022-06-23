@@ -23,7 +23,7 @@ export default function VideoPage() {
     const [isRecording, setIsRecording] = useState(false);
     const [recordingStarted, setRecordingStarted] = useState(false);
     const [audio, setAudio] = useState(null);
-    const [timer, setTimer] = useState(10);
+    const [timer, setTimer] = useState(120);
     const [userData, setUserData] = useState(null);
     const router = useRouter();
 
@@ -39,9 +39,7 @@ export default function VideoPage() {
     const onClickPlayButton = () => {
         setIsPaused(false);
         videoRef.current.play();
-        timerInterval.current = setInterval(() => {
-            setTimer((prevState) => prevState - 1);
-        }, 1000);
+
     };
 
     const videoFinished = () => {
@@ -56,14 +54,9 @@ export default function VideoPage() {
         setRecordingStarted(false);
         setIsRecording(false);
         clearInterval(timerInterval.current);
-        setTimer(10);
+        setTimer(120);
         setIsPaused(false);
         setVideoIndex((prevState) => prevState + 1);
-        if (videoIndex + 1 < videos.length - 1) {
-            timerInterval.current = setInterval(() => {
-                setTimer((prevState) => prevState - 1);
-            }, 1000);
-        }
     };
 
     const extractVideoData = (data) => {
@@ -95,6 +88,9 @@ export default function VideoPage() {
             videoFinished();
         } else {
             Mp3Recorder.start();
+            timerInterval.current = setInterval(() => {
+                setTimer((prevState) => prevState - 1);
+            }, 1000);
             setRecordingStarted(true);
             setIsRecording((prevState) => !prevState);
         }
@@ -117,13 +113,12 @@ export default function VideoPage() {
         }
     };
 
-
     const onClickRestartRecording = () => {
         Mp3Recorder.stop();
         setAudio(null);
         setIsRecording(false);
         setRecordingStarted(false);
-    }
+    };
 
     useEffect(() => {
         if (audio) {
@@ -262,26 +257,30 @@ export default function VideoPage() {
                     />
                 </>
             )}
-            {isPaused ? (
-                <PlayCircleOutlineIcon
-                    style={{
-                        position: "absolute",
-                        fontSize: "5rem",
-                        bottom: "10%",
-                        left: "10%",
-                    }}
-                    onClick={onClickPlayButton}
-                />
-            ) : (
-                <PauseCircleOutlineIcon
-                    style={{
-                        position: "absolute",
-                        fontSize: "5rem",
-                        bottom: "10%",
-                        left: "10%",
-                    }}
-                    onClick={onClickPauseButton}
-                />
+            {!isRecording && (
+                <>
+                    {isPaused ? (
+                        <PlayCircleOutlineIcon
+                            style={{
+                                position: "absolute",
+                                fontSize: "5rem",
+                                bottom: "10%",
+                                left: "10%",
+                            }}
+                            onClick={onClickPlayButton}
+                        />
+                    ) : (
+                        <PauseCircleOutlineIcon
+                            style={{
+                                position: "absolute",
+                                fontSize: "5rem",
+                                bottom: "10%",
+                                left: "10%",
+                            }}
+                            onClick={onClickPauseButton}
+                        />
+                    )}
+                </>
             )}
         </div>
     );
