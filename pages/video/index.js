@@ -5,6 +5,7 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { useEffect, useRef, useState } from "react";
 import {
     fetchMainVideos,
+    fetchReplayVideo,
     fetchUserVideos,
     sendRecording,
 } from "../../apis/video";
@@ -20,16 +21,19 @@ export default function VideoPage() {
     const [videos, setVideos] = useState([]);
     const [currentVideo, setCurrentVideo] = useState(null);
     const [hasFetchedUserVideos, setHasFetchedUserVideos] = useState(false);
-    const [isRecording, setIsRecording] = useState(false);
     const [recordingStarted, setRecordingStarted] = useState(false);
     const [audio, setAudio] = useState(null);
     const [timer, setTimer] = useState(120);
     const [userData, setUserData] = useState(null);
+    const [pauseVisible, setPauseVisible] = useState(true);
+    const [replayVideo, setReplayVideo] = useState(null);
+
     const router = useRouter();
 
     const timerInterval = useRef();
 
     const videoRef = useRef();
+    const isRecording = useRef(false);
 
     const onClickPauseButton = () => {
         setIsPaused(true);
@@ -39,20 +43,30 @@ export default function VideoPage() {
     const onClickPlayButton = () => {
         setIsPaused(false);
         videoRef.current.play();
-
     };
 
     const videoFinished = () => {
-        if (
-            !recordingStarted &&
-            videoIndex > 0 &&
-            videoIndex < videos.length - 1 &&
-            timer > 0
-        ) {
+        if (videos[videoIndex]?.name == 'Ending') {
+            return videoRef.current.pause();
+        }
+        const isEven = videoIndex != 0 && videoIndex % 2 == 0;
+
+        if ((videoIndex + 1) % 2 == 0) {
+            setPauseVisible(false);
+        } else {
+            setPauseVisible(true);
+        }
+        if (isEven && !recordingStarted && timer > 0) {
+            setPauseVisible(false);
             return videoRef.current.play();
         }
+        if (isRecording.current && isEven && timer > 0) {
+            setPauseVisible(false);
+            return videoRef.current.play();
+        }
+
         setRecordingStarted(false);
-        setIsRecording(false);
+        isRecording.current = false;
         clearInterval(timerInterval.current);
         setTimer(120);
         setIsPaused(false);
@@ -73,7 +87,7 @@ export default function VideoPage() {
     };
 
     const onClickRecording = () => {
-        if (isRecording) {
+        if (isRecording.current) {
             Mp3Recorder.stop()
                 .getMp3()
                 .then(([buffer, blob]) => {
@@ -85,6 +99,7 @@ export default function VideoPage() {
                 })
                 .catch((e) => console.log(e));
             videoRef.current.pause();
+            isRecording.current = false;
             videoFinished();
         } else {
             Mp3Recorder.start();
@@ -92,7 +107,7 @@ export default function VideoPage() {
                 setTimer((prevState) => prevState - 1);
             }, 1000);
             setRecordingStarted(true);
-            setIsRecording((prevState) => !prevState);
+            isRecording.current = true;
         }
     };
 
@@ -116,7 +131,7 @@ export default function VideoPage() {
     const onClickRestartRecording = () => {
         Mp3Recorder.stop();
         setAudio(null);
-        setIsRecording(false);
+        isRecording.current = false;
         setRecordingStarted(false);
     };
 
@@ -152,9 +167,10 @@ export default function VideoPage() {
         const fetchUserData = async () => {
             try {
                 const response = await fetchUserDataVideos();
-                console.log(response);
+
                 if (response.status == 200) {
                     setUserData(response.data);
+                    setReplayVideo(response.data.replay);
                 }
             } catch {
                 router.push("/login");
@@ -165,8 +181,16 @@ export default function VideoPage() {
 
     useEffect(() => {
         if (videos.length > 0) {
-            setCurrentVideo(videos[videoIndex]);
-
+            console.log(videos[videoIndex].name)
+            if (videos[videoIndex]?.name == 'Ending') {
+                setCurrentVideo(videos[videoIndex]);
+                return videoRef.current.play();
+            }
+            if (videoIndex != 0 && videoIndex % 2 == 0) {
+                setCurrentVideo(replayVideo);
+            } else {
+                setCurrentVideo(videos[videoIndex]);
+            }
             if (!hasFetchedUserVideos) {
                 setHasFetchedUserVideos(true);
                 const getUserVideos = async () => {
@@ -213,7 +237,7 @@ export default function VideoPage() {
                     />
                 )}
             </video>
-            {videoIndex != 0 && videoIndex != videos.length - 1 && (
+            {!pauseVisible && (
                 <>
                     <p
                         style={{
@@ -236,8 +260,8 @@ export default function VideoPage() {
                         onClick={onClickRecording}
                         style={{
                             position: "absolute",
-                            border: isRecording ? "7px solid red" : "7px solid black",
-                            color: isRecording ? "red" : "black",
+                            border: isRecording.current ? "7px solid red" : "7px solid black",
+                            color: isRecording.current ? "red" : "black",
                             borderRadius: "50px",
                             fontSize: "4rem",
                             bottom: "11%",
@@ -257,7 +281,7 @@ export default function VideoPage() {
                     />
                 </>
             )}
-            {!isRecording && (
+            {pauseVisible && (
                 <>
                     {isPaused ? (
                         <PlayCircleOutlineIcon
