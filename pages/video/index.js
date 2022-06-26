@@ -132,6 +132,7 @@ export default function VideoPage() {
         Mp3Recorder.stop();
         setAudio(null);
         isRecording.current = false;
+        setTimer(120)
         setRecordingStarted(false);
     };
 
@@ -202,7 +203,8 @@ export default function VideoPage() {
                         let cloneState = [...prevState];
                         const openingVideo = cloneState[0];
                         const endingVideo = cloneState[1];
-                        cloneState = [openingVideo, ...userVideos, endingVideo];
+                        let sortedVideos = userVideos.sort((previous, current) => previous.name.slice(".")[0] - current.name.slice(".")[0]);
+                        cloneState = [openingVideo, ...sortedVideos, endingVideo];
                         return cloneState;
                     });
                 };
