@@ -47,7 +47,7 @@ export default function VideoPage() {
     };
 
     const videoFinished = () => {
-        if (videos[videoIndex]?.name == 'Ending') {
+        if (videos[playVideoIndex]?.name == 'Ending') {
             return videoRef.current.pause();
         }
         const isEven = videoIndex != 0 && videoIndex % 2 == 0;
