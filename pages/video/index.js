@@ -27,6 +27,7 @@ export default function VideoPage() {
     const [userData, setUserData] = useState(null);
     const [pauseVisible, setPauseVisible] = useState(true);
     const [replayVideo, setReplayVideo] = useState(null);
+    const [playVideoIndex, setPlayVideoIndex] = useState(0);
 
     const router = useRouter();
 
@@ -71,6 +72,9 @@ export default function VideoPage() {
         setTimer(120);
         setIsPaused(false);
         setVideoIndex((prevState) => prevState + 1);
+        if(!isEven){
+            setPlayVideoIndex(prevState => prevState + 1);
+        }
     };
 
     const extractVideoData = (data) => {
@@ -182,15 +186,14 @@ export default function VideoPage() {
 
     useEffect(() => {
         if (videos.length > 0) {
-            console.log(videos[videoIndex].name)
-            if (videos[videoIndex]?.name == 'Ending') {
-                setCurrentVideo(videos[videoIndex]);
+            if (videos[playVideoIndex]?.name == 'Ending') {
+                setCurrentVideo(videos[playVideoIndex]);
                 return videoRef.current.play();
             }
             if (videoIndex != 0 && videoIndex % 2 == 0) {
                 setCurrentVideo(replayVideo);
             } else {
-                setCurrentVideo(videos[videoIndex]);
+                setCurrentVideo(videos[playVideoIndex]);
             }
             if (!hasFetchedUserVideos) {
                 setHasFetchedUserVideos(true);
@@ -212,7 +215,7 @@ export default function VideoPage() {
                 getUserVideos();
             }
         }
-    }, [videos, videoIndex]);
+    }, [videos, playVideoIndex, videoIndex]);
 
     return (
         <div>
