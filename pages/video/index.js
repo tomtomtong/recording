@@ -48,6 +48,7 @@ export default function VideoPage() {
 
     const videoFinished = () => {
         if (videos[playVideoIndex]?.name == 'Ending') {
+            setPauseVisible(false);
             return videoRef.current.pause();
         }
         const isEven = videoIndex != 0 && videoIndex % 2 == 0;
