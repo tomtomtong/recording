@@ -48,7 +48,7 @@ export default function VideoPage() {
 
     const videoFinished = () => {
         if (videos[playVideoIndex]?.name == 'Ending') {
-            setPauseVisible(false);
+            setPauseVisible(true);
             return videoRef.current.pause();
         }
         const isEven = videoIndex != 0 && videoIndex % 2 == 0;
@@ -73,7 +73,7 @@ export default function VideoPage() {
         setTimer(120);
         setIsPaused(false);
         setVideoIndex((prevState) => prevState + 1);
-        if(!isEven){
+        if (!isEven) {
             setPlayVideoIndex(prevState => prevState + 1);
         }
     };
