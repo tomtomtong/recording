@@ -207,7 +207,7 @@ export default function VideoPage() {
                         let cloneState = [...prevState];
                         const openingVideo = cloneState[0];
                         const endingVideo = cloneState[1];
-                        let sortedVideos = userVideos.sort((previous, current) => previous.name.slice(".")[0] - current.name.slice(".")[0]);
+                        let sortedVideos = userVideos.sort((previous, current) => previous.name.split(".")[0] - current.name.split(".")[0]);
                         cloneState = [openingVideo, ...sortedVideos, endingVideo];
                         return cloneState;
                     });
@@ -225,7 +225,6 @@ export default function VideoPage() {
                 playsInline
                 autoPlay
                 key={videoIndex}
-                muted
                 onEnded={videoFinished}
                 style={{
                     objectFit: "cover",
